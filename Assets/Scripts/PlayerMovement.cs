@@ -6,12 +6,11 @@ public class PlayerMovement : MonoBehaviour
 
 {
     public Rigidbody rb;
-
     public Camera cam;
-
     public Transform headLoc;
-
     public Transform orientation;
+    public KeyCode jumpKey = KeyCode.Space;
+    public float jumpHeight = 10.0f;
 
     public float moveSpeed = 30.0f;
     public float sprintSpeed = 60.0f;
@@ -55,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
         xRotation -= mouseY * sensY;
         xRotation = Mathf.Clamp(xRotation, -90.0f, 90.0f);
 
-        //Eingestellt, dass sich andren Achsen mitdrehen, wenn man sich auf einer anderen Achse dreht
+        //Eingestellt, dass sich anderen Achsen mitdrehen, wenn man sich auf einer anderen Achse dreht
         cam.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.localRotation = Quaternion.Euler(0, yRotation, 0);
 
@@ -64,6 +63,8 @@ public class PlayerMovement : MonoBehaviour
 
         //ermoeglicht das Sprinten
         CheckSprint();
+
+        Jump();
     }
     
     //Bewegung
@@ -85,4 +86,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void Jump()
+    {
+        if (Input.GetKeyDown(jumpKey))
+        {
+            rb.AddForce(transform.up * jumpHeight, ForceMode.VelocityChange);
+        }
+    }
 }
