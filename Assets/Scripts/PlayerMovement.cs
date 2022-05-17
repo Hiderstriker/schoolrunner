@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody rb;
     public Camera cam;
-    public Transform headLoc;
+    public Transform head;
     public Transform orientation;
     public KeyCode jumpKey = KeyCode.Space;
     public float jumpHeight = 10.0f;
@@ -18,6 +18,12 @@ public class PlayerMovement : MonoBehaviour
 
     public float sensX = 2.7f;
     public float sensY = 2.7f;
+
+    [Header("Ground Check")]
+    public Transform groundCheckPos;
+    public float groundCheckRadius = 0.1f;
+    public bool isGrounded;
+    public LayerMask groundLayer;
 
     float keyX, keyY;
 
@@ -47,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
         mouseY = Input.GetAxisRaw("Mouse Y");
 
         //Kamera auf den "head" (child von Player) gebindet
-        cam.transform.localPosition = headLoc.localPosition;
+        cam.transform.localPosition = head.localPosition;
 
         //Kamerabewegung and Sensetivity angepasst und Drehblockade eingebaut.
         yRotation += mouseX * sensX;
@@ -63,6 +69,8 @@ public class PlayerMovement : MonoBehaviour
 
         //ermoeglicht das Sprinten
         CheckSprint();
+
+        GroundCheck();
 
         Jump();
     }
@@ -88,9 +96,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        if (Input.GetKeyDown(jumpKey))
+        if (Input.GetKeyDown(jumpKey) && isGrounded)
         {
             rb.AddForce(transform.up * jumpHeight, ForceMode.VelocityChange);
         }
+    }
+
+    private void GroundCheck()
+    {
+        isGrounded = Physics.CheckSphere(groundCheckPos.position, groundCheckRadius, groundLayer);
     }
 }
