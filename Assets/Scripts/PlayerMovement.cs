@@ -9,11 +9,13 @@ public class PlayerMovement : MonoBehaviour
     public Camera cam;
     public Transform head;
     public Transform orientation;
+    public WallRunning wallRunning;
     public KeyCode jumpKey = KeyCode.Space;
-    public float jumpHeight = 10.0f;
+    public float jumpHeight = 15.0f;
+    public float extraGravity = 3.0f;
 
     public float moveSpeed = 30.0f;
-    public float sprintSpeed = 60.0f;
+    public float sprintSpeed = 45.0f;
     private float speed;
 
     public float sensX = 2.7f;
@@ -78,7 +80,17 @@ public class PlayerMovement : MonoBehaviour
     //Bewegung
     private void FixedUpdate()
     {
+        Movement();
+    }
+
+    private void Movement()
+    {
         rb.AddForce(moveDirection.normalized * speed);
+
+        if(!wallRunning.isWallRunning)
+        {
+            rb.AddForce(Physics.gravity * extraGravity, ForceMode.Acceleration);
+        }
     }
 
     //Sprinten auf LeftShift gelegt und die Schnelligkeit angepasst.
